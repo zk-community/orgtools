@@ -82,13 +82,10 @@ class TextDoc:
         mll = max_line_len
         if mll < 0:
             raise ValueError
-        
         self.lines_out = [
                 self._process_line(_, md) for _ in self.lines_in]
-
         if mll > 0:
             self.lines_out = [self._truncate(_, mll) for _ in self.lines_out]
-
         self.text_out = '\n'.join(self.lines_out)
         return self.text_out
 
@@ -122,7 +119,7 @@ class TextDoc:
         if md:
             url = line_out.split('|')[0].strip()
             txt = '|'.join(line_out.split('|')[1:]).strip()
-            line_out = f"[{url}]({txt})"
+            line_out = f"[{txt}]({url})"
 
         return line_out
 
@@ -145,13 +142,37 @@ class TextDoc:
             title = scrape_html_title(r.group(1)) if r else ''
         return f'{url} | {title} | {domain}'
 
-
 class MarkdownDoc:
-    def __init__(self, txt):
-        self.text_in = txt
-    
+    def __init__(self, text_in):
+        self.text_in = text_in.strip()
+        self.text_out = self.text_in
 
+    def as_simple(self):
+        md_pat = re.compile(r'(\[([^\]]+)\]\(([^\)]+)\))')
+        matches = md_pat.search(self.text_out)
+        while matches:
+            full_match = matches.group(0)
+            name = matches.group(2)
+            url = matches.group(3)
+            replacement = self._replace_inline(full_match) or f'{name} - {url}'
+            self.text_out = self.text_out.replace(full_match, replacement)
+            matches = md_pat.search(self.text_out)
+        return self.text_out
 
+    def _replace_inline(self, line_in):
+        # this is VERY specific to the current way we expect the copy text 
+        # we publish per episode to look
+        md_pat = re.compile(r'(\[([^\]]+)\]\(([^\)]+)\))')  # markdown [.*](.*)
+        k = len(md_pat.findall(self.text_out.split('\n')[0])) + 1
+        matches = md_pat.search(line_in)
+        tw_hdl = ''
+        if matches and k > 1:
+            url = matches.group(3)
+            tw_pat = re.search(r'((https?://)?twitter.com/([^/ ]+))', url)
+            if tw_pat:
+                tw_hdl = tw_pat.group(3)
+        txt_out =  f'@{tw_hdl}' if tw_hdl else ''
+        return txt_out
 
 if __name__ == "__main__":
     txt = '''
@@ -167,9 +188,9 @@ https://youtu.be/5cgq5jOZx9g - workshop from Parity’s Shawn Tabrizi
 https://substrate.io - Substrate runtime modules
 https://blog.quarkslab.com/resources/2022-02-27-xcmv2-audit/21-12-908-REP.pdf - Full audit report for XCM
 '''
-    t = TextDoc(txt)
-    o = t.reformat_links()
-    print (o)
+    #t = TextDoc(txt)
+    #o = t.reformat_links()
+    #print (o)
 
     txt_md = '''
 bla bla [Anna](https://twitter.com/annarrose) catches up with [Tarun](https://twitter.com/tarunchitra), [Guillermo](https://twitter.com/GuilleAngeris) and [Brendan](https://twitter.com/_bfarmer) at DevConnect  bla bla bla blabla
@@ -180,16 +201,12 @@ Here are some links for this episode:
 [@_bfarmer](https://twitter.com/_bfarmer) | Twitter
 [Einstein Notation](https://en.wikipedia.org/wiki/Einstein_notation) | Wikipedia
 [Wordcel / Shape Rotator / Mathcel](https://knowyourmeme.com/memes/cultures/wordcel-shape-rotator-mathcel) | knowyourmeme.com
-(DevConnet AMS 2022)[https://devconnect.org/]
-(zkSummit7 AMS)[https://zksummit.com/]
-(Diplomacy game)[https://en.wikipedia.org/wiki/Diplomacy_(game)]
-(zkSummit 7 YouTube Playlist)[https://www.youtube.com/playlist?list=PLj80z0cJm8QFnY6VLVa84nr-21DNvjW               H7]
-(P-Value Explained)[https://www.investopedia.com/terms/p/p-value.asp]
-(Topology)[https://topology.gg/]
-(What is measure theory?)[https://www.britannica.com/science/measure-theory]
 
 **If you like what we do:**
 Subscribe to our [podcast newsletter](https://zeroknowledge.substack.com)
 Follow us on Twitter [@zeroknowledgefm](https://twitter.com/zeroknowledgefm)
 '''
     md = MarkdownDoc(txt_md)
+    md.as_simple()
+    print (md.text_out)
+
