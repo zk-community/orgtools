@@ -196,11 +196,22 @@ https://blog.quarkslab.com/resources/2022-02-27-xcmv2-audit/21-12-908-REP.pdf - 
 bla bla [Anna](https://twitter.com/annarrose) catches up with [Tarun](https://twitter.com/tarunchitra), [Guillermo](https://twitter.com/GuilleAngeris) and [Brendan](https://twitter.com/_bfarmer) at DevConnect  bla bla bla blabla
 
 Here are some links for this episode:
-[@tarunchitra](https://twitter.com/tarunchitra) | Twitter
-[@GuilleAngeris](https://twitter.com/GuilleAngeris)  | Twitter
-[@_bfarmer](https://twitter.com/_bfarmer) | Twitter
-[Einstein Notation](https://en.wikipedia.org/wiki/Einstein_notation) | Wikipedia
-[Wordcel / Shape Rotator / Mathcel](https://knowyourmeme.com/memes/cultures/wordcel-shape-rotator-mathcel) | knowyourmeme.com
+* [@paritytech | Github](https://github.com/paritytech)
+* [@Polkadot | Twitter](https://twitter.com/Polkadot)
+* [@rphmeier | Twitter](https://twitter.com/rphmeier)
+* [@paritytech/polkadot | Github](https://github.com/paritytech/polkadot)
+* [Ep 83: From Warp Sync to SPREE with Polkadot's Rob Habermeier | ZK Podcast](https://zeroknowledge.fm/83-2)
+* [Ep 15: Chatting about consensus algorithms with Robert Habermeier | ZK Podcast](https://zeroknowledge.fm/15-2)
+* [@paritytech/xcm-format | Github](https://github.com/paritytech/xcm-format)
+* [Kusama, Polkadot's Canary Network | kusama.network](https://kusama.network)
+* [Sub0 Online: Getting Started with XCM - Your First Cross Chain Messages](https://youtu.be/5cgq5jOZx9g)
+* [Pallets | docs.substrate.io](https://docs.substrate.io/v3/runtime/frame/#pallets)
+* [Home | Substrate_ | substrate.io](https://substrate.io)
+* [Statemine | parachains.info](https://parachains.info/details/statemine)
+* [Polkadot Bridges Connecting The Polkadot Ecosystem With External Networks | polkadot.network](https://polkadot.network/blog/polkadot-bridges-connecting-the-polkadot-ecosystem-with-external-networks/)
+* [Learn Spree | wiki.polkadot.network](https://wiki.polkadot.network/docs/learn-spree)
+* [Cloaking Device | memory-alpha.fandom.com](https://memory-alpha.fandom.com/wiki/Cloaking_device)
+
 
 **If you like what we do:**
 Subscribe to our [podcast newsletter](https://zeroknowledge.substack.com)
