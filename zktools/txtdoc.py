@@ -11,6 +11,7 @@ __version__ = "0.1"
 
 import re
 from lxml import html
+from bs4 import BeautifulSoup
 
 import logging
 log_format = '>> %(message)s'
@@ -49,6 +50,23 @@ def _youtube(line_in):
         title = scrape_yt_title(vid)
     return line_in if not r else f'{url} | {title}'
 
+def _iacr(line_in):
+    r = re.match(r'^((https?://)?eprint.iacr.org/(.+))', line_in)
+    if not r:
+        return line_in
+    ed = r.group(3)
+    url = line_in
+    title = scrape_iacr_param(line_in, 'citation_title')
+    authors = scrape_iacr_param(line_in, 'citation_author')
+    return f'{url} | {title} by {authors} | IACR - {ed}'
+
+def scrape_iacr_param(url, attr):
+    attrs = {'name': attr}
+    r = requests.get(url)
+    soup = BeautifulSoup(r.content, 'html.parser')
+    _items = soup.find_all(attrs=attrs)
+    items = ', '.join([x.get('content') for x in _items])
+    return items
 
 #  def scrape_meta(vid, param=None): # we could return the whole json...
 def scrape_yt_title(vid):
@@ -73,10 +91,19 @@ def scrape_html_title(url):
 
 class TextDoc:
     def __init__(self, txt):
+        # TODO reduce new lines to ONE MAX
         self.text_in = txt.strip().strip('\n').strip()
         self.lines_in = self.text_in.split('\n')
         self.lines_out = []
         self.text_out = ''
+
+    def get_links(self, as_text=False):
+        re_link = re.compile(r'https?://[^\s]+', re.I)
+        links = re_link.findall(self.text_in)
+        if as_text:
+            return '\n'.join(links)
+        else:
+            return links
 
     def reformat_links(self, md=False, max_line_len=0):
         mll = max_line_len
@@ -108,7 +135,7 @@ class TextDoc:
         line_in = re.sub('^\s+', '', line_in)
         line_in = re.sub('\s+$', '', line_in)
         line_in = self._force_simple(line_in)
-        ps = [_github, _twitter, _zkfm, _youtube]
+        ps = [_github, _twitter, _zkfm, _youtube, _iacr]
         for f in ps:
             line_out = f(line_in)
             if line_out != line_in:
@@ -119,12 +146,12 @@ class TextDoc:
         if md:
             url = line_out.split('|')[0].strip()
             txt = '|'.join(line_out.split('|')[1:]).strip()
-            line_out = f"[{txt}]({url})"
+            line_out = f"[{txt}]({url})\n"
 
         return line_out
 
     def _default(self, line_in, from_url=True):
-        r = re.match(r'^(((https?://)?([^/ ]+))(/([^ ]+))?)', line_in)
+        r = re.match(r'^(((https?://)([^/ ]+))(/([^ ]+))?)', line_in)
         #r = re.match(r'^(1(2(3https?://)?(4[^/ ]+))(5/(6[^ ]+))?)', line_in)
         if not r:
             return line_in
