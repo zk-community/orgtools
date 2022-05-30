@@ -210,6 +210,7 @@ class ZXParcLink(Link):
         return title
 
 
+# NOTE: in 'tools' category (all github links) drop ` | {pub}`
 class GithubLink(Link):
     def get_title(self):
         title = self._scrape_title()
@@ -226,10 +227,12 @@ class GithubLink(Link):
 
     def get_string(self, url, title, authors, pub):
         string = f"{url} | {title} | {pub}"
+        #string = f"{url} | {title}"
         return string
 
     def get_markdown(self, url, title, authors, pub):
         string = f"[{title}]({url}) | {pub}"
+        #string = f"[{title}]({url})"
         return string
 
 
@@ -249,6 +252,11 @@ class TwitterLink(Link):
     def get_markdown(self, url, title, authors, pub):
         string = f"[Tweet]({url}) by @{authors}"
         return string
+
+
+## Zero Knolwedge Validator Blog
+## Zk Tech Gitcoin Gr13 Recap | Zero Knowledge Validator Blogmedium.com
+# https://medium.com/zero-knowledge-validator/zk-tech-gitcoin-gr13-recap-23f92a2b8c0d
 
 
 class ZeroKnowledgeFMLink(Link):
@@ -274,21 +282,22 @@ class YoutubeLink(Link):
     def get_string(self, url, title, authors, pub):
         if '/watch' in self.url:
             url = re.sub(r'&?ab_channel=[^&]+', '', url)
-            string = f"{url} | {title} by {authors} | {pub}"
+            #string = f"{url} | {title} by {authors} | {pub}"
+            string = f"{url} | {title} by {authors}"
         elif '/playlist' in self.url:
-            string = f"{url} | Playlist: {title} | {pub}"
+            string = f"{url} | Playlist: {title}"
         else:
-            string = f"{url} | {title} | {pub}"
+            string = f"{url} | {title}"
         return string
 
     def get_markdown(self, url, title, authors, pub):
         if '/watch' in self.url:
             url = re.sub(r'&?ab_channel=[^&]+', '', url)
-            string = f"[{title} by {authors}]({url}) | {pub}"
+            string = f"[{title} by {authors}]({url})"
         elif '/playlist' in self.url:
-            string = f"[Playlist: {title}]({url}) | {pub}"
+            string = f"[Playlist: {title}]({url})"
         else:
-            string = f"[{title}]({url}) | {pub}"
+            string = f"[{title}]({url})"
         return string
 
     def _get_authors_video(self):
@@ -350,7 +359,8 @@ class IACRLink(Link):
 
     def get_string(self, url, title, authors, pub):
         edition = self.title_url.replace(' ', '/')
-        string = f"{url} | ({edition}) {title} by {authors} | {pub}"
+        #string = f"{url} | ({edition}) {title} by {authors} | {pub}"
+        string = f"{url} | ({edition}) {title} by {authors}"
         return string
         #return f'{url} | {title} by {authors} | IACR - {ed}'
 
@@ -364,7 +374,8 @@ class IACRLink(Link):
 
     def get_markdown(self, url, title, authors, pub):
         edition = self.title_url.replace(' ', '/')
-        string = f"[Paper {edition}: {title}]({url}) by {authors} | {pub}"
+        string = f"[{title}]({url}) by {authors}"
+        #string = f"[Paper {edition}: {title}]({url}) by {authors} | {pub}"
         return string
 
 if __name__ == "__main__":
